@@ -259,3 +259,9 @@ uv run maturin develop --release
 uv run scripts/benchmark_rust.py
 pytest --benchmark-only
 ```
+
+# FIXMEs
+
+- Add pre-commit.
+- Get support for iterables in python and rust working. !!!Use latest gpt!!!
+- Add tests for iterable support in python.
