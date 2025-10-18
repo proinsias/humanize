@@ -246,7 +246,6 @@ etc.
 
 List the language at the top of this README.
 
-
 # Extras
 
 ```shell
@@ -254,7 +253,7 @@ List the language at the top of this README.
 uv venv --python /opt/homebrew/bin/python3.13
 uv sync --extra dev --extra tests --reinstall
 
-uv run maturin develop --release
+uv run maturin develop --release --uv
 
 uv run scripts/benchmark_rust.py
 pytest --benchmark-only
@@ -262,5 +261,4 @@ pytest --benchmark-only
 
 # FIXMEs
 
-- Add pre-commit.
 - Add marking slow integration test.

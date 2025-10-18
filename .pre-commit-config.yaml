@@ -1,6 +1,18 @@
+default_install_hook_types:
+  - commit-msg
+  - prepare-commit-msg
+  - pre-commit
+  - pre-merge-commit
+  - pre-push
+  - pre-rebase
+  - post-checkout
+  - post-commit
+  - post-merge
+  - post-rewrite
+
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3
+    rev: v0.14.1
     hooks:
       - id: ruff-check
         args: [--exit-non-zero-on-fix]
@@ -27,23 +39,23 @@ repos:
         exclude: \.github/ISSUE_TEMPLATE\.md|\.github/PULL_REQUEST_TEMPLATE\.md
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.34.0
+    rev: 0.34.1
     hooks:
       - id: check-github-workflows
       - id: check-renovate
 
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.7
+    rev: v1.7.8
     hooks:
       - id: actionlint
 
   - repo: https://github.com/woodruffw/zizmor-pre-commit
-    rev: v1.14.2
+    rev: v1.15.2
     hooks:
       - id: zizmor
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.7.0
+    rev: v2.11.0
     hooks:
       - id: pyproject-fmt
 
@@ -53,12 +65,12 @@ repos:
       - id: validate-pyproject
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 1.6.0
+    rev: 1.7.0
     hooks:
       - id: tox-ini-fmt
 
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.19.0
     hooks:
       - id: yamlfmt
 
@@ -73,6 +85,70 @@ repos:
     hooks:
       - id: check-hooks-apply
       - id: check-useless-excludes
+
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: fmt
+      - id: cargo-check
+
+  - repo: https://github.com/tsvikas/sync-with-uv
+    rev: v0.4.0 # replace with the latest version
+    hooks:
+      - id: sync-with-uv
+
+  - repo: https://github.com/lycheeverse/lychee.git
+    rev: nightly
+    hooks:
+      - id: lychee
+        args: ["--cache", "--suggest"]
+
+  - repo: https://github.com/ikamensh/flynt/
+    rev: "1.0.6"
+    hooks:
+      - id: flynt
+
+  - repo: https://github.com/dosisod/refurb
+    rev: v2.2.0
+    hooks:
+      - id: refurb
+
+  - repo: https://github.com/MarcoGorelli/auto-walrus
+    rev: 0.3.4
+    hooks:
+      - id: auto-walrus
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.406
+    hooks:
+      - id: pyright
+
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v4.0.0
+    hooks:
+      - id: add-trailing-comma
+        args:
+          - --py36-plus
+
+  - repo: https://github.com/hadialqattan/pycln
+    rev: v2.5.0 # Possible releases: https://github.com/hadialqattan/pycln/releases
+    hooks:
+      - id: pycln
+
+  - repo: https://github.com/MarcoGorelli/absolufy-imports
+    rev: v0.3.1
+    hooks:
+      - id: absolufy-imports
+
+  - repo: local
+    hooks:
+      - id: maturin-check
+        name: Maturin Build Check
+        entry: maturin develop --skip-install --uv
+        language: system
+        pass_filenames: false
+        always_run: true
+        verbose: true
 
 ci:
   autoupdate_schedule: quarterly
