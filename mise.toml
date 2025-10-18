@@ -1,4 +1,7 @@
 # Don't put credentials or other secrets into this shared file!
+[env]
+PYO3_PYTHON = "/opt/homebrew/bin/python3.13"
+
 [hooks]
 enter = "mise i -q"
 
@@ -8,6 +11,3 @@ idiomatic_version_file_enable_tools = ["python"]
 python.uv_venv_auto = true  # Use uv venv.
 status.missing_tools = "always"
 status.show_env = true
-
-[tools]
-python = "3.13"

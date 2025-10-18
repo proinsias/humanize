@@ -250,13 +250,12 @@ List the language at the top of this README.
 # Extras
 
 ```shell
-uv run hatch version write
-uv run maturin develop --release
+# Need shared-library enabled python.
+uv venv --python /opt/homebrew/bin/python3.13
 uv sync --extra dev --extra tests --reinstall
 
-# in _fast directory.
-cargo test
+uv run maturin develop --release
 
-# Run tests with verbose output
-cargo test -- --nocapture
+uv run scripts/benchmark_rust.py
+pytest --benchmark-only
 ```

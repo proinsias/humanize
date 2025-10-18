@@ -41,7 +41,13 @@ classifiers = [
 # Users can install `humanize[dev]` or `humanize[tests]`
 [project.optional-dependencies]
 dev = ["maturin>=1.4", "ruff>=0.6", "pytest>=8.0", "hatch", "hatch-vcs"]
-tests = ["freezegun", "pytest", "pytest-cov"]
+tests = [
+    "freezegun",
+    "pytest",
+    "pytest-benchmark",
+    "pytest-cov",
+    "tqdm",
+]
 
 [project.urls]
 Documentation = "https://humanize.readthedocs.io/"
