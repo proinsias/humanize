@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 try:
-    from . import _fast
+    from humanize._fast import intcomma
+
     _FAST_ENABLED = True
 except ImportError:
+    from humanize import intcomma
+
     _FAST_ENABLED = False
+
 
 from humanize.filesize import naturalsize
 from humanize.i18n import activate, deactivate, decimal_separator, thousands_separator

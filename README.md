@@ -253,4 +253,10 @@ List the language at the top of this README.
 uv run hatch version write
 uv run maturin develop --release
 uv sync --extra dev --extra tests --reinstall
+
+# in _fast directory.
+cargo test
+
+# Run tests with verbose output
+cargo test -- --nocapture
 ```
