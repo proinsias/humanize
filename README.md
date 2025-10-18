@@ -246,7 +246,7 @@ etc.
 
 List the language at the top of this README.
 
-# Extras
+## Extras
 
 ```shell
 # Need shared-library enabled python.
@@ -259,6 +259,21 @@ uv run scripts/benchmark_rust.py
 pytest --benchmark-only
 ```
 
-# FIXMEs
+## FIXMEs
 
 - Add marking slow integration test.
+- Add rust optimized version of filesize.naturalsize.
+- Add rust optimized version of lists.natural_list.
+- Add rust optimized version of number.apnumber.
+- Add rust optimized version of number.clamp.
+- Add rust optimized version of number.fractional.
+- Add rust optimized version of number.intword.
+- Add rust optimized version of number.metric.
+- Add rust optimized version of number.ordinal.
+- Add rust optimized version of number.scientific.
+- Add rust optimized version of time.naturaldate.
+- Add rust optimized version of time.naturalday.
+- Add rust optimized version of time.naturaldelta.
+- Add rust optimized version of time.naturaltime.
+- Add rust optimized version of time.precisedelta.
+- Update code to support i18n.
