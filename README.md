@@ -263,5 +263,4 @@ pytest --benchmark-only
 # FIXMEs
 
 - Add pre-commit.
-- Get support for iterables in python and rust working. !!!Use latest gpt!!!
-- Add tests for iterable support in python.
+- Add marking slow integration test.
