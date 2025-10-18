@@ -9,11 +9,11 @@ from .i18n import _pgettext as P_
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import TypeAlias
+    from typing import Iterable, TypeAlias
 
     # This type can be better defined by typing.SupportsFloat
     # but that's a Python 3.8 only typing option.
-    NumberOrString: TypeAlias = float | str
+    NumberOrString: TypeAlias = int | float | str
 
 
 def _format_not_finite(value: float) -> str:
@@ -105,11 +105,17 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
     return f"{value}{t[value % 10]}"
 
 
-def intcomma(value: NumberOrString, ndigits: int | None = None) -> str:
+def intcomma(
+    value: NumberOrString | Iterable[NumberOrString],
+    ndigits: int | None = None,
+) -> str | Iterable[str]:
     """Converts an integer to a string containing commas every three digits.
 
     For example, 3000 becomes "3,000" and 45000 becomes "45,000". To maintain some
     compatibility with Django's `intcomma`, this function also accepts floats.
+
+    This function now also accepts an iterable of numbers or strings,
+    returning an iterable of strings with commas added.
 
     Examples:
         ```pycon
@@ -129,7 +135,8 @@ def intcomma(value: NumberOrString, ndigits: int | None = None) -> str:
         '14,308.4'
         >>> intcomma(None)
         'None'
-
+        >>> intcomma([1000, 2000000, "3000000.75"])
+        ['1,000', '2,000,000', '3,000,000.75']
         ```
 
     Args:
@@ -139,6 +146,21 @@ def intcomma(value: NumberOrString, ndigits: int | None = None) -> str:
     Returns:
         str: String containing commas every three digits.
     """
+    try:
+        # Check if we can use the fast implementation.
+        from . import _fast
+
+        return _fast.intcomma(value, ndigits)
+    except ImportError:
+        pass
+
+    try:
+        # Check if value is iterable.
+        iter(value)
+        return [intcomma(v, ndigits) for v in value]
+    except TypeError:
+        pass
+
     import math
 
     thousands_sep = thousands_separator()

@@ -245,3 +245,12 @@ Where `<locale name>` is a locale abbreviation, eg. `en_GB`, `pt_BR` or just `ru
 etc.
 
 List the language at the top of this README.
+
+
+# Extras
+
+```shell
+uv run hatch version write
+uv run maturin develop --release
+uv sync --extra dev --extra tests --reinstall
+```

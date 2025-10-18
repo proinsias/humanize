@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+try:
+    from . import _fast
+    _FAST_ENABLED = True
+except ImportError:
+    _FAST_ENABLED = False
+
 from humanize.filesize import naturalsize
 from humanize.i18n import activate, deactivate, decimal_separator, thousands_separator
 from humanize.lists import natural_list
@@ -9,7 +15,6 @@ from humanize.number import (
     apnumber,
     clamp,
     fractional,
-    intcomma,
     intword,
     metric,
     ordinal,
@@ -23,7 +28,10 @@ from humanize.time import (
     precisedelta,
 )
 
-from ._version import __version__
+try:
+    from ._version import __version__
+except ModuleNotFoundError:
+    __version__ = "0.0.0"  # fallback version
 
 __all__ = [
     "__version__",
