@@ -2,20 +2,22 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, cast
 
-from .i18n import _gettext as _
-from .i18n import _ngettext, decimal_separator, thousands_separator
-from .i18n import _ngettext_noop as NS_
-from .i18n import _pgettext as P_
+from humanize.i18n import _gettext as _
+from humanize.i18n import _ngettext, decimal_separator, thousands_separator
+from humanize.i18n import _ngettext_noop as NS_
+from humanize.i18n import _pgettext as P_
 
-TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Iterable, TypeAlias
+    from typing import TypeAlias
 
     # This type can be better defined by typing.SupportsFloat
     # but that's a Python 3.8 only typing option.
     NumberOrString: TypeAlias = int | float | str
+    IntOrNone: TypeAlias = int | None
+    StringOrListOfString: TypeAlias = str | list[str]
 
 
 def _format_not_finite(value: float) -> str:
@@ -109,14 +111,15 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
 
 def intcomma(
     value: NumberOrString | Iterable[NumberOrString],
-    ndigits: int | None = None,
+    ndigits: IntOrNone = None,
 ) -> str | list[str]:
     """Converts an integer to a string containing commas every three digits.
 
     For example, 3000 becomes "3,000" and 45000 becomes "45,000". To maintain some
     compatibility with Django's `intcomma`, this function also accepts floats.
 
-    The function also accepts iterables of numbers or strings, returning a list of strings.
+    The function also accepts iterables of numbers or strings,
+    returning a list of strings.
 
     Examples:
         ```pycon
@@ -148,7 +151,7 @@ def intcomma(
         str: String or list of strings containing commas every three digits.
     """
     if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
-        return [intcomma(v, ndigits) for v in value]
+        return cast(list[str], [intcomma(v, ndigits) for v in value])
 
     import math
 
@@ -264,7 +267,7 @@ def intword(value: NumberOrString, format: str = "%.1f") -> str:
                 return (
                     negative_prefix
                     + " ".join(
-                        [format, _ngettext(singular, plural, math.ceil(chopped))]
+                        [format, _ngettext(singular, plural, math.ceil(chopped))],
                     )
                 ) % chopped
 
@@ -445,17 +448,14 @@ def scientific(value: NumberOrString, precision: int = 2) -> str:
             return _format_not_finite(value)
     except (ValueError, TypeError):
         return str(value)
-    fmt = f"{{:.{str(int(precision))}e}}"
-    n = fmt.format(value)
+    n = f"{{:.{precision}e}}".format(value)
     part1, part2 = n.split("e")
     # Remove redundant leading '+' or '0's (preserving the last '0' for 10⁰).
     import re
 
     part2 = re.sub(r"^\+?(\-?)0*(.+)$", r"\1\2", part2)
 
-    new_part2 = []
-    for char in part2:
-        new_part2.append(exponents[char])
+    new_part2 = [exponents[char] for char in part2]
 
     final_str = part1 + " x 10" + "".join(new_part2)
 

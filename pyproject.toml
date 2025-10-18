@@ -1,25 +1,23 @@
 [build-system]
-# maturin handles both pure Python and Rust submodules, so we can drop hatchling as backend.
-requires = ["maturin>=1.4,<2.0"]
 build-backend = "maturin"
+# maturin handles both pure Python and Rust submodules, so we can drop hatchling as backend.
+requires = [ "maturin>=1.4,<2" ]
 
 [project]
 name = "humanize"
 description = "Python humanize utilities with optional Rust acceleration"
 readme = "README.md"
+keywords = [ "formatting", "humanize", "numbers", "size", "time" ]
+
 license = { text = "MIT" }
-requires-python = ">=3.10, <3.14"
-dynamic = ["version"]
-
-keywords = ["humanize", "time", "size", "formatting", "numbers"]
-
-authors = [
-  { name = "Jason Moiron", email = "jmoiron@jmoiron.net" },
-]
 maintainers = [
   { name = "Hugo van Kemenade" },
 ]
 
+authors = [
+  { name = "Jason Moiron", email = "jmoiron@jmoiron.net" },
+]
+requires-python = ">=3.10,<3.14"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -31,38 +29,36 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Text Processing",
   "Topic :: Text Processing :: General",
 ]
 
+dynamic = [ "version" ]
+
 # Users can install `humanize[dev]` or `humanize[tests]`
-[project.optional-dependencies]
-dev = ["maturin>=1.4", "ruff>=0.6", "pytest>=8.0", "hatch", "hatch-vcs"]
-tests = [
-    "freezegun",
-    "pytest",
-    "pytest-benchmark",
-    "pytest-cov",
-    "tqdm",
+optional-dependencies.dev = [ "hatch", "hatch-vcs", "maturin>=1.4", "pytest>=8", "ruff>=0.6" ]
+optional-dependencies.tests = [
+  "freezegun",
+  "pytest",
+  "pytest-benchmark",
+  "pytest-cov",
+  "tqdm",
 ]
-
-[project.urls]
-Documentation = "https://humanize.readthedocs.io/"
-Funding = "https://tidelift.com/subscription/pkg/pypi-humanize"
-Homepage = "https://github.com/python-humanize/humanize"
-"Issue Tracker" = "https://github.com/python-humanize/humanize/issues"
-"Release Notes" = "https://github.com/python-humanize/humanize/releases"
-Source = "https://github.com/python-humanize/humanize"
-
+urls.Documentation = "https://humanize.readthedocs.io/"
+urls.Funding = "https://tidelift.com/subscription/pkg/pypi-humanize"
+urls.Homepage = "https://github.com/python-humanize/humanize"
+urls."Issue Tracker" = "https://github.com/python-humanize/humanize/issues"
+urls."Release Notes" = "https://github.com/python-humanize/humanize/releases"
 # Use hatch-vcs to manage version if you still prefer it
+urls.Source = "https://github.com/python-humanize/humanize"
+
 [tool.hatch]
 version.source = "vcs"
 
 [tool.hatch.build]
-artifacts = ["*.mo"]
+artifacts = [ "*.mo" ]
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/humanize/_version.py"
@@ -71,6 +67,7 @@ version-file = "src/humanize/_version.py"
 local_scheme = "no-local-version"
 
 # --- maturin configuration ---
+
 [tool.maturin]
 # Use pyo3 bindings for Rust
 bindings = "pyo3"
@@ -79,30 +76,51 @@ python-source = "src"
 # Path to your Cargo manifest
 manifest-path = "src/humanize/_fast/Cargo.toml"
 # Ensures your wheel bundles both the Python and Rust modules
-include = ["src/humanize/**/*", "Cargo.toml"]
+include = [ "src/humanize/**/*", "Cargo.toml" ]
 module-name = "humanize._fast"
 
 # --- Code quality and testing ---
+
 [tool.ruff]
 fix = true
 lint.select = [
-  "C4", "D", "E", "EM", "F", "I", "ICN", "ISC", "LOG", "PGH", "PIE",
-  "PT", "PYI", "RUF022", "RUF100", "UP", "W", "YTT"
+  "C4",
+  "D",
+  "E",
+  "EM",
+  "F",
+  "I",
+  "ICN",
+  "ISC",
+  "LOG",
+  "PGH",
+  "PIE",
+  "PT",
+  "PYI",
+  "RUF022",
+  "RUF100",
+  "UP",
+  "W",
+  "YTT",
 ]
 lint.ignore = [
-  "E203", "E221", "E226", "E241", "PIE790", "UP038"
+  "E203",
+  "E221",
+  "E226",
+  "E241",
+  "PIE790",
 ]
-lint.per-file-ignores."tests/*" = ["D"]
+lint.per-file-ignores."tests/*" = [ "D" ]
 lint.flake8-import-conventions.aliases.datetime = "dt"
-lint.flake8-import-conventions.banned-from = ["datetime"]
-lint.isort.known-first-party = ["humanize"]
-lint.isort.required-imports = ["from __future__ import annotations"]
+lint.flake8-import-conventions.banned-from = [ "datetime" ]
+lint.isort.known-first-party = [ "humanize" ]
+lint.isort.required-imports = [ "from __future__ import annotations" ]
 lint.pydocstyle.convention = "google"
 
 [tool.pytest.ini_options]
 addopts = "--color=yes"
-filterwarnings = ["error"]
-testpaths = ["tests"]
+filterwarnings = [ "error" ]
+testpaths = [ "tests" ]
 
 [tool.coverage.report]
 exclude_also = [

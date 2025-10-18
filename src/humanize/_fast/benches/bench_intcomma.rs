@@ -51,10 +51,7 @@ fn benchmark_new(c: &mut Criterion) {
     let data = generate_numbers(100_000);
     c.bench_function("new optimized + rayon", |b| {
         b.iter(|| {
-            let _: Vec<String> = data
-                .par_iter()
-                .map(|s| add_commas(s))
-                .collect();
+            let _: Vec<String> = data.par_iter().map(|s| add_commas(s)).collect();
         })
     });
 }

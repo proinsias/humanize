@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import gettext as gettext_module
 from threading import local
+from typing import TYPE_CHECKING
 
-TYPE_CHECKING = False
 if TYPE_CHECKING:
     import os
     import pathlib
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ["activate", "deactivate", "decimal_separator", "thousands_separator"]
 
 _TRANSLATIONS: dict[str | None, gettext_module.NullTranslations] = {
-    None: gettext_module.NullTranslations()
+    None: gettext_module.NullTranslations(),
 }
 _CURRENT = local()
 
@@ -56,7 +56,8 @@ def get_translation() -> gettext_module.NullTranslations:
 
 
 def activate(
-    locale: str | None, path: str | os.PathLike[str] | None = None
+    locale: str | None,
+    path: str | os.PathLike[str] | None = None,
 ) -> gettext_module.NullTranslations:
     """Activate internationalisation.
 

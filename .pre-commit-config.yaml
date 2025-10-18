@@ -90,7 +90,9 @@ repos:
     rev: v1.0
     hooks:
       - id: fmt
+        args: ["--manifest-path", "src/humanize/_fast/Cargo.toml", "--"]
       - id: cargo-check
+        args: ["--manifest-path", "src/humanize/_fast/Cargo.toml"]
 
   - repo: https://github.com/tsvikas/sync-with-uv
     rev: v0.4.0 # replace with the latest version
@@ -122,13 +124,12 @@ repos:
     rev: v1.1.406
     hooks:
       - id: pyright
+        entry: uv run pyright
 
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v4.0.0
     hooks:
       - id: add-trailing-comma
-        args:
-          - --py36-plus
 
   - repo: https://github.com/hadialqattan/pycln
     rev: v2.5.0 # Possible releases: https://github.com/hadialqattan/pycln/releases

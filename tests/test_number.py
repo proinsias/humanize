@@ -10,9 +10,19 @@ import pytest
 import humanize
 from humanize import number
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from humanize.number import (
+        IntOrNone,
+        NumberOrString,
+        StringOrListOfString,
+    )
+
 
 @pytest.mark.parametrize(
-    "test_input, expected",
+    ("test_input", "expected"),
     [
         ("1", "1st"),
         ("2", "2nd"),
@@ -39,7 +49,7 @@ def test_ordinal(test_input: str, expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         ([100], "100"),
         ([1000], "1,000"),
@@ -57,6 +67,7 @@ def test_ordinal(test_input: str, expected: str) -> None:
         (["1234567.1234567", 1], "1,234,567.1"),
         (["1234567.1234567", 10], "1,234,567.1234567000"),
         (["1234567", 1], "1,234,567.0"),
+        ([["100", "1000"]], ["100", "1,000"]),
         ([None], "None"),
         ([14308.40], "14,308.4"),
         ([14308.40, None], "14,308.4"),
@@ -78,9 +89,12 @@ def test_ordinal(test_input: str, expected: str) -> None:
     ],
 )
 def test_intcomma(
-    test_args: list[int] | list[float] | list[str], expected: str
+    test_args: tuple[NumberOrString | Iterable[NumberOrString], IntOrNone],
+    expected: StringOrListOfString,
 ) -> None:
     assert humanize.intcomma(*test_args) == expected
+    assert number.intcomma(*test_args) == expected
+    assert humanize._fast.intcomma(*test_args) == expected  # type: ignore[attr-defined]
 
 
 def test_intword_powers() -> None:
@@ -89,7 +103,7 @@ def test_intword_powers() -> None:
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         (["0"], "0"),
         (["100"], "100"),
@@ -134,7 +148,7 @@ def test_intword(test_args: list[str], expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_input, expected",
+    ("test_input", "expected"),
     [
         (0, "zero"),
         (1, "one"),
@@ -157,7 +171,7 @@ def test_apnumber(test_input: int | str, expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_input, expected",
+    ("test_input", "expected"),
     [
         (1, "1"),
         (2.0, "2"),
@@ -183,7 +197,7 @@ def test_fractional(test_input: float | str, expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         ([1000], "1.00 x 10³"),
         ([-1000], "-1.00 x 10³"),
@@ -214,7 +228,7 @@ def test_scientific(test_args: list[typing.Any], expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         ([1], "1"),
         ([None], None),
@@ -234,7 +248,7 @@ def test_clamp(test_args: list[typing.Any], expected: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         ([0], "0.00"),
         ([1, "Hz"], "1.00 Hz"),

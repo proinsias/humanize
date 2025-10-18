@@ -7,12 +7,12 @@ from __future__ import annotations
 
 from enum import Enum
 from functools import total_ordering
+from typing import TYPE_CHECKING
 
-from .i18n import _gettext as _
-from .i18n import _ngettext
-from .number import intcomma
+from humanize.i18n import _gettext as _
+from humanize.i18n import _ngettext
+from humanize.number import intcomma
 
-TYPE_CHECKING = False
 if TYPE_CHECKING:
     import datetime as dt
     from collections.abc import Iterable
@@ -66,7 +66,10 @@ def _abs_timedelta(delta: dt.timedelta) -> dt.timedelta:
 
 
 def _date_and_delta(
-    value: Any, *, now: dt.datetime | None = None, precise: bool = False
+    value: Any,
+    *,
+    now: dt.datetime | None = None,
+    precise: bool = False,
 ) -> tuple[Any, Any]:
     """Turn a value into a date and a timedelta which represents how long ago it was.
 
@@ -525,7 +528,7 @@ def precisedelta(
     usecs = delta.microseconds
 
     MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS, MONTHS, YEARS = list(
-        Unit
+        Unit,
     )
 
     # Given DAYS compute YEARS and the remainder of DAYS as follows:
@@ -541,31 +544,66 @@ def precisedelta(
     #
     # The same applies for months, hours, minutes and milliseconds below
     years, days = _quotient_and_remainder(
-        days, 365, YEARS, min_unit, suppress_set, format
+        days,
+        365,
+        YEARS,
+        min_unit,
+        suppress_set,
+        format,
     )
     months, days = _quotient_and_remainder(
-        days, 30.5, MONTHS, min_unit, suppress_set, format
+        days,
+        30.5,
+        MONTHS,
+        min_unit,
+        suppress_set,
+        format,
     )
 
     secs = days * 24 * 3600 + secs
     days, secs = _quotient_and_remainder(
-        secs, 24 * 3600, DAYS, min_unit, suppress_set, format
+        secs,
+        24 * 3600,
+        DAYS,
+        min_unit,
+        suppress_set,
+        format,
     )
 
     hours, secs = _quotient_and_remainder(
-        secs, 3600, HOURS, min_unit, suppress_set, format
+        secs,
+        3600,
+        HOURS,
+        min_unit,
+        suppress_set,
+        format,
     )
     minutes, secs = _quotient_and_remainder(
-        secs, 60, MINUTES, min_unit, suppress_set, format
+        secs,
+        60,
+        MINUTES,
+        min_unit,
+        suppress_set,
+        format,
     )
 
     usecs = secs * 1e6 + usecs
     secs, usecs = _quotient_and_remainder(
-        usecs, 1e6, SECONDS, min_unit, suppress_set, format
+        usecs,
+        1e6,
+        SECONDS,
+        min_unit,
+        suppress_set,
+        format,
     )
 
     msecs, usecs = _quotient_and_remainder(
-        usecs, 1000, MILLISECONDS, min_unit, suppress_set, format
+        usecs,
+        1000,
+        MILLISECONDS,
+        min_unit,
+        suppress_set,
+        format,
     )
 
     # Due to rounding, it could be that a unit is high enough to be promoted to a higher

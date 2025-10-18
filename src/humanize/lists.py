@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-TYPE_CHECKING = False
+from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from typing import Any
 
@@ -30,7 +31,8 @@ def natural_list(items: list[Any]) -> str:
     """
     if len(items) == 1:
         return str(items[0])
-    elif len(items) == 2:
-        return f"{str(items[0])} and {str(items[1])}"
-    else:
-        return ", ".join(str(item) for item in items[:-1]) + f" and {str(items[-1])}"
+
+    if len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+
+    return ", ".join(str(item) for item in items[:-1]) + f" and {items[-1]}"
