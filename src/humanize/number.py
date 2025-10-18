@@ -106,13 +106,15 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
 
 
 def intcomma(
-    value: NumberOrString,
+    value: NumberOrString | Iterable[NumberOrString],
     ndigits: int | None = None,
-) -> str:
+) -> str | list[str]:
     """Converts an integer to a string containing commas every three digits.
 
     For example, 3000 becomes "3,000" and 45000 becomes "45,000". To maintain some
     compatibility with Django's `intcomma`, this function also accepts floats.
+
+    The function also accepts iterables of numbers or strings, returning a list of strings.
 
     Examples:
         ```pycon
@@ -132,15 +134,19 @@ def intcomma(
         '14,308.4'
         >>> intcomma(None)
         'None'
+        >>> intcomma([1000, 2500000, "1234567.89"])
+        ['1,000', '2,500,000', '1,234,567.89']
         ```
 
     Args:
-        value (int, float, str): Integer or float to convert.
+        value (int, float, str, iterable): Number or iterable of numbers to convert.
         ndigits (int, None): Digits of precision for rounding after the decimal point.
 
     Returns:
-        str: String containing commas every three digits.
+        str: String or list of strings containing commas every three digits.
     """
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
+        return [intcomma(v, ndigits) for v in value]
 
     import math
 

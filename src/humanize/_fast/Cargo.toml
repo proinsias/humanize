@@ -11,3 +11,6 @@ crate-type = ["cdylib"]
 pyo3 = { version = "0.22", features = ["extension-module"] }
 regex = "1"
 rayon = "1.7"   # for parallel processing
+
+[dev-dependencies]
+criterion = "0.7.0"

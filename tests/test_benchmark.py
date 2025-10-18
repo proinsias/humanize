@@ -10,3 +10,5 @@ def test_python_benchmark(benchmark):
 
 def test_rust_benchmark(benchmark):
     benchmark(lambda: [humanize._fast.intcomma(n) for n in nums])
+
+# FIXME: Add as slow integration tests!
