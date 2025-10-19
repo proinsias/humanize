@@ -7,8 +7,8 @@ import typing
 
 import pytest  # pylint: disable=import-error
 
-import humanize
-from humanize import number
+import humanize  # pylint: disable=import-error
+from humanize import number  # pylint: disable=import-error
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable, Iterable
