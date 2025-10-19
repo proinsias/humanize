@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import pytest
+import pytest  # pylint: disable=import-error
 
 
 @pytest.fixture(scope="module")

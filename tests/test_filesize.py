@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import typing
 
-import pytest
+import pytest  # pylint: disable=import-error
 
 import humanize
 from humanize import filesize

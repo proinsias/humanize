@@ -43,7 +43,7 @@ def naturalsize(
     value: NumberOrString | Iterable[NumberOrString],
     binary: bool = False,
     gnu: bool = False,
-    format: str = "%.1f",
+    format: str = "%.1f",  # pylint: disable=redefined-builtin
 ) -> StringOrListOfString:
     """Format a number of bytes like a human-readable filesize (e.g. 10 kB).
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import typing
 
-import pytest
+import pytest  # pylint: disable=import-error
 
 import humanize
 from humanize import number

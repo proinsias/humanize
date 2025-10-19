@@ -119,6 +119,15 @@ lint.isort.known-first-party = [ "humanize" ]
 lint.isort.required-imports = [ "from __future__ import annotations" ]
 lint.pydocstyle.convention = "google"
 
+[tool.pylint."tests.*"]
+disable = [
+  "c-extension-no-member",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "protected-access",
+]
+
 [tool.pytest.ini_options]
 addopts = "--color=yes"
 filterwarnings = [ "error" ]

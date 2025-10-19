@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import math
+import re
 from collections.abc import Iterable
+from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
 from humanize.i18n import _gettext as _
@@ -22,8 +25,6 @@ if TYPE_CHECKING:
 
 def _format_not_finite(value: float) -> str:
     """Utility function to handle infinite and nan cases."""
-    import math
-
     if math.isnan(value):
         return "NaN"
     if math.isinf(value) and value < 0:
@@ -70,8 +71,6 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
     Returns:
         str: Ordinal string.
     """
-    import math
-
     try:
         if not math.isfinite(float(value)):
             return _format_not_finite(float(value))
@@ -79,7 +78,7 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
     except (TypeError, ValueError):
         return str(value)
     if gender == "male":
-        t = (
+        t_string = (
             P_("0 (male)", "th"),
             P_("1 (male)", "st"),
             P_("2 (male)", "nd"),
@@ -92,7 +91,7 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
             P_("9 (male)", "th"),
         )
     else:
-        t = (
+        t_string = (
             P_("0 (female)", "th"),
             P_("1 (female)", "st"),
             P_("2 (female)", "nd"),
@@ -105,8 +104,8 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
             P_("9 (female)", "th"),
         )
     if value % 100 in (11, 12, 13):  # special case
-        return f"{value}{t[0]}"
-    return f"{value}{t[value % 10]}"
+        return f"{value}{t_string[0]}"
+    return f"{value}{t_string[value % 10]}"
 
 
 def intcomma(
@@ -153,8 +152,6 @@ def intcomma(
     if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
         return cast(list[str], [intcomma(v, ndigits) for v in value])
 
-    import math
-
     thousands_sep = thousands_separator()
     decimal_sep = decimal_separator()
     try:
@@ -174,11 +171,10 @@ def intcomma(
         return str(value)
 
     if ndigits is not None:
-        orig = "{0:.{1}f}".format(value, ndigits)
+        orig = f"{value:.{ndigits}f}"
     else:
         orig = str(value)
     orig = orig.replace(".", decimal_sep)
-    import re
 
     while True:
         new = re.sub(r"^(-?\d+)(\d{3})", rf"\g<1>{thousands_sep}\g<2>", orig)
@@ -204,7 +200,10 @@ human_powers = (
 )
 
 
-def intword(value: NumberOrString, format: str = "%.1f") -> str:
+def intword(
+    value: NumberOrString,
+    format: str = "%.1f",  # pylint: disable=redefined-builtin
+) -> str:
     """Converts a large integer to a friendly text representation.
 
     Works best for numbers over 1 million. For example, 1_000_000 becomes "1.0 million",
@@ -239,8 +238,6 @@ def intword(value: NumberOrString, format: str = "%.1f") -> str:
         str: Friendly text representation as a string, unless the value passed could not
             be coaxed into an `int`.
     """
-    import math
-
     try:
         if not math.isfinite(float(value)):
             return _format_not_finite(float(value))
@@ -308,8 +305,6 @@ def apnumber(value: NumberOrString) -> str:
             returns a string unless the value was not `int`-able, then `str(value)`
             is returned.
     """
-    import math
-
     try:
         if not math.isfinite(float(value)):
             return _format_not_finite(float(value))
@@ -371,15 +366,12 @@ def fractional(value: NumberOrString) -> str:
     Returns:
         str: Fractional number as a string.
     """
-    import math
-
     try:
         number = float(value)
         if not math.isfinite(number):
             return _format_not_finite(number)
     except (TypeError, ValueError):
         return str(value)
-    from fractions import Fraction
 
     whole_number = int(number)
     frac = Fraction(number - whole_number).limit_denominator(1000)
@@ -427,8 +419,6 @@ def scientific(value: NumberOrString, precision: int = 2) -> str:
     Returns:
         str: Number in scientific notation z.wq x 10ⁿ.
     """
-    import math
-
     exponents = {
         "0": "⁰",
         "1": "¹",
@@ -448,10 +438,9 @@ def scientific(value: NumberOrString, precision: int = 2) -> str:
             return _format_not_finite(value)
     except (ValueError, TypeError):
         return str(value)
-    n = f"{{:.{precision}e}}".format(value)
-    part1, part2 = n.split("e")
+    number_string = f"{{:.{precision}e}}".format(value)
+    part1, part2 = number_string.split("e")
     # Remove redundant leading '+' or '0's (preserving the last '0' for 10⁰).
-    import re
 
     part2 = re.sub(r"^\+?(\-?)0*(.+)$", r"\1\2", part2)
 
@@ -462,9 +451,9 @@ def scientific(value: NumberOrString, precision: int = 2) -> str:
     return final_str
 
 
-def clamp(
+def clamp(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     value: float,
-    format: str = "{:}",
+    format: str = "{:}",  # pylint: disable=redefined-builtin
     floor: float | None = None,
     ceil: float | None = None,
     floor_token: str = "<",
@@ -509,8 +498,6 @@ def clamp(
             will be prepended with a token indicating as such.
 
     """
-    import math
-
     if value is None:
         return None
 
@@ -574,8 +561,6 @@ def metric(value: float, unit: str = "", precision: int = 3) -> str:
     Returns:
         str:
     """
-    import math
-
     if not math.isfinite(value):
         return _format_not_finite(value)
     exponent = int(math.floor(math.log10(abs(value)))) if value != 0 else 0
