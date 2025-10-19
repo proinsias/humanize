@@ -200,7 +200,7 @@ human_powers = (
 )
 
 
-def intword(
+def intword(  # pylint: disable=too-many-return-statements
     value: NumberOrString | Iterable[NumberOrString],
     format: str = "%.1f",  # pylint: disable=redefined-builtin
 ) -> str | list[str]:
