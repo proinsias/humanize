@@ -201,14 +201,17 @@ human_powers = (
 
 
 def intword(
-    value: NumberOrString,
+    value: NumberOrString | Iterable[NumberOrString],
     format: str = "%.1f",  # pylint: disable=redefined-builtin
-) -> str:
+) -> str | list[str]:
     """Converts a large integer to a friendly text representation.
 
     Works best for numbers over 1 million. For example, 1_000_000 becomes "1.0 million",
     1200000 becomes "1.2 million" and "1_200_000_000" becomes "1.2 billion". Supports up
     to decillion (33 digits) and googol (100 digits).
+
+    The function also accepts iterables of numbers or strings,
+    returning a list of strings.
 
     Examples:
         ```pycon
@@ -226,18 +229,22 @@ def intword(
         'None'
         >>> intword("1234000", "%0.3f")
         '1.234 million'
-
+        >>> intword([100, 12400, "1000000"])
+        ['100', '12.4 thousand', '1.0 million']
         ```
 
     Args:
-        value (int, float, str): Integer to convert.
+        value (int, float, str, iterable): Number or iterable of numbers to convert.
         format (str): To change the number of decimal or general format of the number
             portion.
 
     Returns:
-        str: Friendly text representation as a string, unless the value passed could not
-            be coaxed into an `int`.
+        str, list[str]: Friendly text representation as a string or list of strings,
+            unless the value passed could not be coaxed into an `int`.
     """
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
+        return cast(list[str], [intword(v, format) for v in value])
+
     try:
         if not math.isfinite(float(value)):
             return _format_not_finite(float(value))

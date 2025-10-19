@@ -261,10 +261,9 @@ pytest --benchmark-skip -n auto
 
 ## FIXMEs
 
-- Add rust optimized version of filesize.naturalsize.
 - Add rust optimized version of number.intword.
+
 - Add marking slow integration test.
-- Duplicate unit test for rust and python implementations.
 - Add rust optimized version of lists.natural_list.
 - Add rust optimized version of number.apnumber.
 - Add rust optimized version of number.clamp.

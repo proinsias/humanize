@@ -156,6 +156,7 @@ def test_intword_powers() -> None:
         ([1_000_000_000_000_000_000_000_000_000_000_000_000], "1000.0 decillion"),
         ([1_100_000_000_000_000_000_000_000_000_000_000_000], "1100.0 decillion"),
         ([2_100_000_000_000_000_000_000_000_000_000_000_000], "2100.0 decillion"),
+        ([["100", "1000"]], ["100", "1.0 thousand"]),
         ([None], "None"),
         (["1230000", "%0.2f"], "1.23 million"),
         ([10**101], "1" + "0" * 101),
@@ -166,8 +167,41 @@ def test_intword_powers() -> None:
         (["-inf"], "-Inf"),
     ],
 )
-def test_intword(test_args: list[str], expected: str) -> None:
+def test_intword(
+    test_args: tuple[NumberOrString | Iterable[NumberOrString], str],
+    expected: StringOrListOfString,
+) -> None:
     assert humanize.intword(*test_args) == expected
+    assert number.intword(*test_args) == expected
+    # assert humanize._fast.intword(*test_args) == expected
+
+
+def test_python_intword_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [number.intword(n) for n in nums])
+
+
+def test_rust_intword_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [humanize._fast.intword(n) for n in nums])  # type: ignore[attr-defined]
+
+
+def test_python_iterable_intword_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: number.intword(nums))
+
+
+def test_rust_iterable_intword_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: humanize._fast.intword(nums))  # type: ignore[attr-defined]
 
 
 @pytest.mark.parametrize(

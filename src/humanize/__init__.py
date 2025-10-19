@@ -3,27 +3,23 @@
 from __future__ import annotations
 
 try:
-    from humanize._fast import intcomma, naturalsize
+    from humanize._fast import (  # type: ignore[attr-defined]
+        intcomma,
+        intword,
+        naturalsize,
+    )
 
     _FAST_ENABLED = True
 except ImportError:
     from humanize.filesize import naturalsize
-    from humanize.number import intcomma
+    from humanize.number import intcomma, intword
 
     _FAST_ENABLED = False
 
 
 from humanize.i18n import activate, deactivate, decimal_separator, thousands_separator
 from humanize.lists import natural_list
-from humanize.number import (
-    apnumber,
-    clamp,
-    fractional,
-    intword,
-    metric,
-    ordinal,
-    scientific,
-)
+from humanize.number import apnumber, clamp, fractional, metric, ordinal, scientific
 from humanize.time import (
     naturaldate,
     naturalday,
