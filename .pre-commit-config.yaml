@@ -148,7 +148,17 @@ repos:
         entry: maturin develop --skip-install --uv
         language: system
         pass_filenames: false
-        always_run: true
+        verbose: true
+        stages:
+          - pre-push
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: uv run pylint
+        files: \.py$
+        language: system
         verbose: true
         stages:
           - pre-push
