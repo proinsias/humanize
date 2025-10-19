@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 try:
-    from humanize._fast import intcomma
+    from humanize._fast import intcomma, naturalsize
 
     _FAST_ENABLED = True
 except ImportError:
-    from humanize import intcomma
+    from humanize.filesize import naturalsize
+    from humanize.number import intcomma
 
     _FAST_ENABLED = False
 
 
-from humanize.filesize import naturalsize
 from humanize.i18n import activate, deactivate, decimal_separator, thousands_separator
 from humanize.lists import natural_list
 from humanize.number import (
@@ -33,7 +33,7 @@ from humanize.time import (
 )
 
 try:
-    from ._version import __version__
+    from humanize._version import __version__  # type: ignore[import-not-found]
 except ModuleNotFoundError:
     __version__ = "0.0.0"  # fallback version
 

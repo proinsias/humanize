@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
+import typing
+from collections.abc import Iterable
 from math import log
+
+if typing.TYPE_CHECKING:
+    from humanize.number import NumberOrString, StringOrListOfString
+
 
 suffixes = {
     "decimal": (
@@ -34,16 +40,19 @@ suffixes = {
 
 
 def naturalsize(
-    value: float | str,
+    value: NumberOrString | Iterable[NumberOrString],
     binary: bool = False,
     gnu: bool = False,
     format: str = "%.1f",
-) -> str:
+) -> StringOrListOfString:
     """Format a number of bytes like a human-readable filesize (e.g. 10 kB).
 
     By default, decimal suffixes (kB, MB) are used.
 
     Non-GNU modes are compatible with jinja2's `filesizeformat` filter.
+
+    The function also accepts iterables of numbers or strings,
+    returning a list of strings.
 
     Examples:
         ```pycon
@@ -63,11 +72,12 @@ def naturalsize(
         '30000.0 QB'
         >>> naturalsize(-4096, True)
         '-4.0 KiB'
-
+        >>> naturalsize([1024, 1048576], True)
+        ['1.0 KiB', '1.0 MiB']
         ```
 
     Args:
-        value (int, float, str): Integer to convert.
+        value (int, float, str, iterable): Integer or list of integers to convert.
         binary (bool): If `True`, uses binary suffixes (KiB, MiB) with base
             2<sup>10</sup> instead of 10<sup>3</sup>.
         gnu (bool): If `True`, the binary argument is ignored and GNU-style
@@ -75,8 +85,14 @@ def naturalsize(
         format (str): Custom formatter.
 
     Returns:
-        str: Human readable representation of a filesize.
+        str, list[str]: Human readable representation of one or more filesizes.
     """
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
+        return typing.cast(
+            list[str],
+            [naturalsize(v, binary, gnu, format) for v in value],
+        )
+
     if gnu:
         suffix = suffixes["gnu"]
     elif binary:

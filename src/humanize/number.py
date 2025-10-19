@@ -148,7 +148,7 @@ def intcomma(
         ndigits (int, None): Digits of precision for rounding after the decimal point.
 
     Returns:
-        str: String or list of strings containing commas every three digits.
+        str, list[str]: String or list of strings containing commas every three digits.
     """
     if isinstance(value, Iterable) and not isinstance(value, (str, bytes)):
         return cast(list[str], [intcomma(v, ndigits) for v in value])

@@ -44,6 +44,8 @@ optional-dependencies.tests = [
   "pytest",
   "pytest-benchmark",
   "pytest-cov",
+  "pytest-sugar",
+  "pytest-xdist",
   "tqdm",
 ]
 urls.Documentation = "https://humanize.readthedocs.io/"

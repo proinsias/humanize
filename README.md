@@ -255,20 +255,20 @@ uv sync --extra dev --extra tests --reinstall
 
 uv run maturin develop --release --uv
 
-uv run scripts/benchmark_rust.py
 pytest --benchmark-only
+pytest --benchmark-skip -n auto
 ```
 
 ## FIXMEs
 
-- Duplicate unit test for rust and python implementations.
-- Add marking slow integration test.
 - Add rust optimized version of filesize.naturalsize.
+- Add rust optimized version of number.intword.
+- Add marking slow integration test.
+- Duplicate unit test for rust and python implementations.
 - Add rust optimized version of lists.natural_list.
 - Add rust optimized version of number.apnumber.
 - Add rust optimized version of number.clamp.
 - Add rust optimized version of number.fractional.
-- Add rust optimized version of number.intword.
 - Add rust optimized version of number.metric.
 - Add rust optimized version of number.ordinal.
 - Add rust optimized version of number.scientific.

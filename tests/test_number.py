@@ -10,15 +10,10 @@ import pytest
 import humanize
 from humanize import number
 
-TYPE_CHECKING = False
-if TYPE_CHECKING:
-    from collections.abc import Iterable
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
 
-    from humanize.number import (
-        IntOrNone,
-        NumberOrString,
-        StringOrListOfString,
-    )
+    from humanize.number import IntOrNone, NumberOrString, StringOrListOfString
 
 
 @pytest.mark.parametrize(
@@ -95,6 +90,34 @@ def test_intcomma(
     assert humanize.intcomma(*test_args) == expected
     assert number.intcomma(*test_args) == expected
     assert humanize._fast.intcomma(*test_args) == expected  # type: ignore[attr-defined]
+
+
+def test_python_intcomma_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [number.intcomma(n) for n in nums])
+
+
+def test_rust_intcomma_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [humanize._fast.intcomma(n) for n in nums])  # type: ignore[attr-defined]
+
+
+def test_python_iterable_intcomma_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: number.intcomma(nums))
+
+
+def test_rust_iterable_intcomma_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: humanize._fast.intcomma(nums))  # type: ignore[attr-defined]
 
 
 def test_intword_powers() -> None:

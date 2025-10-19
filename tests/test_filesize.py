@@ -1,15 +1,22 @@
-#!/usr/bin/env python
-
 """Tests for filesize humanizing."""
+
 from __future__ import annotations
+
+import typing
 
 import pytest
 
 import humanize
+from humanize import filesize
+
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+    from humanize.number import NumberOrString, StringOrListOfString
 
 
 @pytest.mark.parametrize(
-    "test_args, expected",
+    ("test_args", "expected"),
     [
         ([300], "300 Bytes"),
         (["1000"], "1.0 kB"),
@@ -83,13 +90,48 @@ import humanize
         ([1.123456789 * 10**6, False, True], "1.1M"),
     ],
 )
-def test_naturalsize(test_args: list[int] | list[int | bool], expected: str) -> None:
+def test_naturalsize(
+    test_args: tuple[NumberOrString | Iterable[NumberOrString], bool, bool, str],
+    expected: str,
+) -> None:
     assert humanize.naturalsize(*test_args) == expected
+    assert filesize.naturalsize(*test_args) == expected
+    assert humanize._fast.naturalsize(*test_args) == expected  # type: ignore[attr-defined]
 
     # Retest with negative input
-    if isinstance(test_args[0], int):
-        test_args[0] *= -1
+    if isinstance(test_args[0], int | float):
+        test_args[0] *= -1  # type: ignore[index]
     else:
-        test_args[0] = f"-{test_args[0]}"
+        test_args[0] = f"-{test_args[0]}"  # type: ignore[index]
 
     assert humanize.naturalsize(*test_args) == "-" + expected
+    assert filesize.naturalsize(*test_args) == "-" + expected
+    assert humanize._fast.naturalsize(*test_args) == "-" + expected  # type: ignore[attr-defined]
+
+
+def test_python_naturalsize_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [filesize.naturalsize(n) for n in nums])
+
+
+def test_rust_naturalsize_benchmark(
+    benchmark: Callable[[Callable[[], list[StringOrListOfString]]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: [humanize._fast.naturalsize(n) for n in nums])  # type: ignore[attr-defined]
+
+
+def test_python_iterable_naturalsize_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: filesize.naturalsize(nums))
+
+
+def test_rust_iterable_naturalsize_benchmark(
+    benchmark: Callable[[Callable[[], StringOrListOfString]], None],
+    nums: list[str],
+) -> None:
+    benchmark(lambda: humanize._fast.naturalsize(nums))  # type: ignore[attr-defined]
